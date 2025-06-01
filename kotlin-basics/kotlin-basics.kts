@@ -21,6 +21,3 @@ println(secondUser.printUserDetails())
 
 val thirdUser = UserWithId(name = "Kento", age = 32, id = null)
 println(thirdUser.printUserDetails())
-
-
-
