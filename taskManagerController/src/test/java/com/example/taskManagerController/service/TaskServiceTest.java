@@ -19,7 +19,7 @@ public class TaskServiceTest {
 
     // --- READ (getAllTasks) ---
     @Test
-    void testGetAllTasks() {
+    void testGetAllTasks_returnsAllInitialTasks() {
         List<Task> allTasks = taskservice.getAllTasks();
 
         assertNotNull(allTasks, "List of tasks should not be null");
@@ -29,7 +29,7 @@ public class TaskServiceTest {
 
     // --- READ (getTaskById) ---
     @Test
-    void testGetTaskById_found() {
+    void testGetTaskById_found_returnsCorrectTask() {
         Long taskId = 2L;
 
         Optional<Task> result = taskservice.getTaskById(taskId);
@@ -40,7 +40,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void testGetTaskById_notFound() {
+    void testGetTaskById_notFound_returnsEmptyOptional() {
         Long nonExistentTaskId = 99L;
 
         Optional<Task> result = taskservice.getTaskById(nonExistentTaskId);
@@ -48,9 +48,15 @@ public class TaskServiceTest {
         assertFalse(result.isPresent(), "Task with ID 99 should not be found");
     }
 
+    @Test
+    void testGetTaskById_nullId_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> taskservice.getTaskById(null),
+        "Calling getTaskById with null ID should throw IllegalArgumentException");
+    }
+
     // --- CREATE (addTask) ---
     @Test
-    void testAddTask_successAndRetrievable() {
+    void testAddTask_success_increasesSizeAndIsRetrievable() {
         int initialSize = taskservice.getAllTasks().size();
         Task newTask = new Task(null, "Groceries", LocalDate.of(2025, 6, 15), "Tokyu Store", false);
 
@@ -64,9 +70,15 @@ public class TaskServiceTest {
         assertEquals(createdTask.getId(), foundTask.get().getId(), "Retrieved task ID should match created task ID");
     }
 
+    @Test
+    void testAddTask_nullTask_throwsIllegalArgumentException()  {
+        assertThrows(IllegalArgumentException.class, () -> taskservice.addTask(null),
+        "Adding a null task should throw IllegalArgumentException");
+    }
+
     // --- UPDATE (updateTask) ---
     @Test
-    void testUpdateTask_success(){
+    void testUpdateTask_success_updatesTaskAndReturnsOptional(){
         Long taskId = 5L;
         Task updatedTask = new Task(5L, "Cook", LocalDate.of(2025, 6, 9), "Breakfast, Lunch", false);
 
@@ -76,9 +88,25 @@ public class TaskServiceTest {
         assertEquals("Breakfast, Lunch", updatedResult.get().getDescription(), "Description should be updated");
     }
 
+    void testUpdateTask_notFound_returnsEmptyOptional() {
+        Long nonExistentTaskId = 99L;
+        Task updatedTask = new Task(nonExistentTaskId, "Non Existent", LocalDate.of(2025, 6, 10), "Random", false);
+
+        Optional<Task> result = taskservice.updateTask(nonExistentTaskId, updatedTask);
+
+        assertFalse(result.isPresent(), "Updating a non-existent task should return an empty Optional");
+    }
+
+    @Test
+    void testUpdateTask_nullId_throwsIllegalArgumentException() {
+        Task updatedTask = new Task(null, "Cook", LocalDate.of(2025, 6, 9), "Breakfast, Lunch", false);
+        assertThrows(IllegalArgumentException.class, () -> taskservice.updateTask(null, updatedTask),
+        "Calling updateTask with null ID should throw IllegalArgumentException");
+    }
+
     // --- DELETE (deleteTask) ---
     @Test
-    void testDeleteTask_idFound(){
+    void testDeleteTask_idFound_removesTaskAndReturnsTrue(){
         Long taskId = 4L;
         int initialSize = taskservice.getAllTasks().size();
 
@@ -89,7 +117,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void testDeleteTask_idNotFound_returnsFalse(){
+    void testDeleteTask_idNotFound_returnsFalseAndKeepsSize(){
         Long taskId = 99L;
         int initialSize = taskservice.getAllTasks().size();
 
@@ -97,5 +125,11 @@ public class TaskServiceTest {
 
         assertFalse(deleted, "Deleting a non-existent task should return false");
         assertEquals(initialSize, taskservice.getAllTasks().size(), "Task list size should not change when task not found");
+    }
+
+    @Test
+    void testDeleteTask_nullId_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> taskservice.deleteTask(null),
+        "Calling deleteTask with null ID should throw IllegalArgumentException");
     }
 }

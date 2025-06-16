@@ -1,5 +1,7 @@
 package com.example.taskManagerController.service;
 import com.example.taskManagerController.model.Task;
+import jakarta.annotation.Nonnull;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,16 +27,29 @@ public class TaskService {
     }
 
     public Optional<Task> getTaskById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Task ID for retrieval cannot be null.");
+        }
         return tasks.stream().filter(task -> task.getId().equals(id)).findFirst();
     }
 
     public Task addTask(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Task to add cannot be null.");
+        }
         task.setId(generateNextId());
         tasks.add(task);
         return task;
     }
 
     public Optional<Task> updateTask(Long id, Task updatedTask) {
+        if (id == null) {
+            throw new IllegalArgumentException("Task ID for update cannot be null.");
+        }
+        if (updatedTask == null) {
+            throw new IllegalArgumentException("Updated task object cannot be null.");
+        }
+
         return getTaskById(id).map(task -> {
             task.setTitle(updatedTask.getTitle());
             task.setDate(updatedTask.getDate());
@@ -45,6 +60,9 @@ public class TaskService {
     }
 
     public boolean deleteTask(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Task ID for deletion cannot be null.");
+        }
         return tasks.removeIf(task -> task.getId().equals(id));
     }
 
