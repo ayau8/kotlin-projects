@@ -1,4 +1,4 @@
-package entity;
+package com.example.taskManagerController.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;

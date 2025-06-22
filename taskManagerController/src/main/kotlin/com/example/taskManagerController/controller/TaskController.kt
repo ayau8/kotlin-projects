@@ -1,7 +1,7 @@
-package controller;
+package com.example.taskManagerController.controller;
 
-import model.Task;
-import service.TaskService;
+import com.example.taskManagerController.model.Task;
+import com.example.taskManagerController.service.TaskService;
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.UUID

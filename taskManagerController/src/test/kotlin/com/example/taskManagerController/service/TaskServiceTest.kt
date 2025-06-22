@@ -1,6 +1,6 @@
-package service;
+package com.example.taskManagerController.service;
 
-import model.Task;
+import com.example.taskManagerController.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions.*;
