@@ -43,7 +43,6 @@ class TaskService {
         }
     }
 
-    // Function to delete a task
     fun deleteTask(id: UUID): Boolean {
         return tasks.removeIf { it.id == id }
     }
