@@ -1,10 +1,9 @@
-package com.example.taskManagerController.service;
+package com.example.taskManagerController.service
 
-
-import com.example.taskManagerController.model.Task;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.UUID;
+import com.example.taskManagerController.model.Task
+import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.util.UUID
 
 @Service
 class TaskService {
@@ -37,6 +36,7 @@ class TaskService {
     }
 
     fun addTask(task: Task): Task {
+        require(getTaskById(task.id) == null) { "Task with ID ${task.id} already exists." }
         tasks.add(task)
         return task
     }

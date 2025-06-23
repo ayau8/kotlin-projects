@@ -1,7 +1,7 @@
 package com.example.taskManagerController.controller
 
-import com.example.taskManagerController.model.Task;
-import com.example.taskManagerController.service.TaskService;
+import com.example.taskManagerController.model.Task
+import com.example.taskManagerController.service.TaskService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
@@ -33,6 +33,7 @@ class TaskController(private val taskService: TaskService) {
         }
     }
 
+    @PutMapping("/{id}")
     fun updateTask(@PathVariable id: UUID, @RequestBody updatedTask: Task): ResponseEntity<Task> {
         return try {
             taskService.updateTask(id, updatedTask)
