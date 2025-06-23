@@ -1,7 +1,7 @@
-package com.example.taskManagerController.entity;
+package com.example.taskManagerController.entity
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
+import jakarta.persistence.*
+import org.hibernate.annotations.UuidGenerator
 
 import java.time.LocalDate;
 import java.util.UUID;
