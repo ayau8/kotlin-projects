@@ -1,9 +1,10 @@
-package com.example.taskManagerController.controller;
+package com.example.taskManagerController.controller
 
 import com.example.taskManagerController.model.Task;
 import com.example.taskManagerController.service.TaskService;
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.HttpStatus
 import java.util.UUID
 
 @RestController
@@ -23,20 +24,28 @@ class TaskController(private val taskService: TaskService) {
     }
 
     @PostMapping
-    fun createTask(@RequestBody task: Task): Task {
-        return taskService.addTask(task);
+    fun createTask(@RequestBody task: Task): ResponseEntity<Task?> {
+        return try {
+            val createdTask = taskService.addTask(task)
+            ResponseEntity.status(HttpStatus.CREATED).body(createdTask)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().build()
+        }
     }
 
-    @PutMapping("/{id}")
     fun updateTask(@PathVariable id: UUID, @RequestBody updatedTask: Task): ResponseEntity<Task> {
-        return taskService.updateTask(id, updatedTask)
-            ?.let { task -> ResponseEntity.ok(task) }
-            ?: ResponseEntity.notFound().build()
+        return try {
+            taskService.updateTask(id, updatedTask)
+                ?.let { task -> ResponseEntity.ok(task) }
+                ?: ResponseEntity.notFound().build()
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().build()
+        }
     }
 
     @DeleteMapping("/{id}")
     fun deleteTask(@PathVariable id: UUID): ResponseEntity<Void> {
         val deleted = taskService.deleteTask(id)
-        return if (deleted) ResponseEntity.ok().build() else ResponseEntity.notFound().build()
+        return if (deleted) ResponseEntity.noContent().build() else ResponseEntity.notFound().build()
     }
 }

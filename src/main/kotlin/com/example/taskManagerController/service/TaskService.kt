@@ -9,10 +9,8 @@ import java.util.UUID;
 @Service
 class TaskService {
 
-    // updated to var so that it can be reassigned
     private var tasks: MutableList<Task> = mutableListOf()
 
-    // Init block to set up initial tasks when the bean is created
     init {
         resetInitialTasks()
     }
@@ -44,6 +42,8 @@ class TaskService {
     }
 
     fun updateTask(id: UUID, updatedTask: Task): Task? {
+        require(updatedTask.id == id) { "Task object ID (${updatedTask.id}) must match the provided ID ($id) for update." }
+
         return tasks.firstOrNull { it.id == id }?.let { existingTask ->
             existingTask.title = updatedTask.title
             existingTask.date = updatedTask.date

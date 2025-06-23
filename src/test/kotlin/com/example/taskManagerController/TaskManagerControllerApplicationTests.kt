@@ -1,4 +1,4 @@
-package com.example.taskManagerController.service.TaskService;
+package com.example.taskManagerController;
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
