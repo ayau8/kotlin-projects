@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -53,6 +54,7 @@ class TaskManagerControllerIntegrationTest {
 
     // --- GET Task By ID ---
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `GET_api_tasks_id - should return task by ID if found`() {
         mockMvc.perform(get("/api/tasks/{id}", ID_CAMPING))
             .andExpect(status().isOk)
@@ -62,6 +64,7 @@ class TaskManagerControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `GET_api_tasks_id - should return 404 if task not found`() {
         val nonExistentId = UUID.randomUUID()
         mockMvc.perform(get("/api/tasks/{id}", nonExistentId))
@@ -101,6 +104,7 @@ class TaskManagerControllerIntegrationTest {
 
     // --- PUT Update Task ---
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `PUT_api_tasks_id - should update existing task`() {
         val taskIdToUpdate = ID_WORK
         val updatedTask = Task(taskIdToUpdate, "Updated Work Task", LocalDate.of(2025, 6, 8), "Updated description for work", true)
@@ -116,6 +120,7 @@ class TaskManagerControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `PUT_api_tasks_id - should return 404 if task to update not found`() {
         val nonExistentId = UUID.randomUUID()
         val updatedTask = Task(nonExistentId, "Non Existent Update", LocalDate.now(), "Some description", false)
@@ -128,6 +133,7 @@ class TaskManagerControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `PUT_api_tasks_id - should return 400 if ID in path and body do not match`() {
         val pathId = ID_WORK
         val bodyId = ID_HIKING
@@ -142,6 +148,7 @@ class TaskManagerControllerIntegrationTest {
 
     // --- DELETE Task ---
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `DELETE_api_tasks_id - should delete existing task`() {
         val taskIdToDelete = ID_SNOWBOARDING
 
@@ -156,6 +163,7 @@ class TaskManagerControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `DELETE_api_tasks_id - should return 404 if task to delete not found`() {
         val nonExistentId = UUID.randomUUID()
 
