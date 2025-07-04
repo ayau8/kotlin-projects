@@ -73,6 +73,7 @@ class TaskManagerControllerIntegrationTest {
 
     // --- POST Add Task ---
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `POST_api_tasks - should create a new task`() {
         val fakeId = UUID.randomUUID()
         val newTask = Task(fakeId, "New Integration Task", LocalDate.of(2026, 1, 1), "Test description", false)
@@ -92,6 +93,7 @@ class TaskManagerControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = ["USER"])
     fun `POST_api_tasks - should return 400 if task has ID on creation`() {
         val taskWithExistingId = Task(ID_HIKING, "Existing ID Task", LocalDate.now(), "Desc", false)
         val taskJson = objectMapper.writeValueAsString(taskWithExistingId)
