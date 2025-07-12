@@ -37,7 +37,7 @@ class UserControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = ["ADMIN"])
     fun `POST_api_users_with_tasks - should create user with tasks`() {
         val newUser = User(
-            username = "alvinyau",
+            username = "fortesting",
             password = "password123",
             roles = "USER",
             tasks = listOf(
@@ -50,7 +50,7 @@ class UserControllerIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(newUserJson))
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.username").value("alvinyau"))
+            .andExpect(jsonPath("$.username").value("fortesting"))
             .andExpect(jsonPath("$.tasks.length()").value(1))
             .andExpect(jsonPath("$.tasks[0].title").value("Task"))
     }
