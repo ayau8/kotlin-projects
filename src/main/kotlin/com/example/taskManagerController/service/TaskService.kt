@@ -16,7 +16,11 @@ class TaskService {
 
     // This method is for testing purposes to ensure a clean state before each test
     // For a real application with a database, @Transactional test rolls back will be applied
-    // or a tool like Testcontainers to manage the database state
+    /**
+     * Resets the task list to a predefined set of initial tasks.
+     *
+     * Primarily intended for testing scenarios to restore the in-memory task list to a known state.
+     */
     fun resetInitialTasks() {
         tasks = mutableListOf(
         Task(UUID.fromString("c016e41b-7a32-4d2b-8a8b-1a2b3c4d5e6f"), "Hiking", LocalDate.of(2025, 6, 5), "Okutama", true),
@@ -27,20 +31,48 @@ class TaskService {
         )
     }
 
+    /**
+     * Returns a list of all current tasks.
+     *
+     * @return An immutable list containing all tasks.
+     */
     fun getAllTasks(): List<Task> {
         return tasks.toList()
     }
 
+    /**
+     * Retrieves the task with the specified UUID.
+     *
+     * @param id The unique identifier of the task to retrieve.
+     * @return The matching Task if found, or null if no task with the given ID exists.
+     */
     fun getTaskById(id: UUID): Task? {
         return tasks.firstOrNull { it.id == id }
     }
 
+    /**
+     * Adds a new task to the list if its ID is unique.
+     *
+     * @param task The task to add.
+     * @return The added task.
+     * @throws IllegalArgumentException if a task with the same ID already exists.
+     */
     fun addTask(task: Task): Task {
         require(getTaskById(task.id) == null) { "Task with ID ${task.id} already exists." }
         tasks.add(task)
         return task
     }
 
+    /**
+     * Updates the task with the specified ID using the values from the provided updated task.
+     *
+     * The updated task's ID must match the provided ID. If a matching task exists, its fields are replaced with those from the updated task.
+     *
+     * @param id The UUID of the task to update.
+     * @param updatedTask The task containing updated values; its ID must match the provided ID.
+     * @return The updated task if found, or `null` if no task with the given ID exists.
+     * @throws IllegalArgumentException If the updated task's ID does not match the provided ID.
+     */
     fun updateTask(id: UUID, updatedTask: Task): Task? {
         require(updatedTask.id == id) { "Task object ID (${updatedTask.id}) must match the provided ID ($id) for update." }
 
@@ -53,6 +85,12 @@ class TaskService {
         }
     }
 
+    /**
+     * Removes the task with the specified UUID from the list.
+     *
+     * @param id The UUID of the task to remove.
+     * @return `true` if a task was removed; `false` if no matching task was found.
+     */
     fun deleteTask(id: UUID): Boolean {
         return tasks.removeIf { it.id == id }
     }
