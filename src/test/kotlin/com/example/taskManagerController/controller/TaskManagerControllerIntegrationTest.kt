@@ -1,5 +1,6 @@
 package com.example.taskManagerController.controller
 
+import com.example.taskManagerController.dto.TaskRequest
 import com.example.taskManagerController.model.Task
 import com.example.taskManagerController.service.TaskService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -75,13 +76,20 @@ class TaskManagerControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testuser", roles = ["USER"])
     fun `POST_api_tasks - should create a new task`() {
-        val fakeId = UUID.randomUUID()
-        val newTask = Task(fakeId, "New Integration Task", LocalDate.of(2026, 1, 1), "Test description", false)
-        val newTaskJson = objectMapper.writeValueAsString(newTask)
+        val testUserId = UUID.fromString("00000000-0000-0000-0000-000000000001")
+
+        val createRequest = TaskRequest(
+            title = "New Integration Task",
+            date = LocalDate.of(2025, 7, 13),
+            description = "Test description",
+            isCompleted = false,
+            userId = testUserId
+        )
+        val requestJson = objectMapper.writeValueAsString(createRequest)
 
         mockMvc.perform(post("/api/tasks")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(newTaskJson))
+            .content(requestJson))
             .andExpect(status().isCreated)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").exists())

@@ -1,7 +1,10 @@
 package com.example.taskManagerController.controller
 
+import com.example.taskManagerController.dto.TaskRequest
+import com.example.taskManagerController.dto.TaskResponse
 import com.example.taskManagerController.model.Task
 import com.example.taskManagerController.service.TaskService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
@@ -24,7 +27,7 @@ class TaskController(private val taskService: TaskService) {
     }
 
     @PostMapping
-    fun createTask(@RequestBody task: Task): ResponseEntity<Task?> {
+    fun createTask(@Valid @RequestBody task: TaskRequest): ResponseEntity<TaskResponse?> {
         return try {
             val createdTask = taskService.addTask(task)
             ResponseEntity.status(HttpStatus.CREATED).body(createdTask)

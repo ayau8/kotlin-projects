@@ -1,5 +1,6 @@
 package com.example.taskManagerController.service;
 
+import com.example.taskManagerController.dto.TaskRequest
 import com.example.taskManagerController.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,18 +51,25 @@ public class TaskServiceTest {
 
 //     --- CREATE (addTask) ---
     @Test
-    fun testAddTask_success_increasesSizeAndIsRetrievable() {
-        val initialSize = taskService.getAllTasks().size;
-        val fakeId = UUID.randomUUID()
-        val newTask = Task(fakeId,"Groceries", LocalDate.of(2025, 6, 15), "Tokyu Store", false);
-        val createdTask = taskService.addTask(newTask);
+    fun `addTask should create and return a new task from DTO`() {
+        val testUserId = UUID.fromString("00000000-0000-0000-0000-000000000001")
 
-        assertEquals(initialSize + 1, taskService.getAllTasks().size, "Task list size should increase by 1");
-        assertEquals("Groceries", createdTask.title);
+        val requestDto = TaskRequest(
+            title = "Test Task from DTO",
+            date = LocalDate.of(2025, 7, 13),
+            description = "This is a task created from a DTO in a test",
+            isCompleted = false,
+            userId = testUserId
+        )
 
-        val foundTask = taskService.getTaskById(createdTask.id);
-        assertNotNull(foundTask, "Newly added task should be retrievable by its ID");
-        assertEquals(createdTask.id, foundTask?.id, "Retrieved task ID should match created task ID")
+        val responseDto = taskService.addTask(requestDto)
+
+        assertNotNull(responseDto.id)
+        assertEquals("Test Task from DTO", responseDto.title)
+        assertEquals(LocalDate.of(2025, 7, 13), responseDto.date)
+        assertEquals("This is a task created from a DTO in a test", responseDto.description)
+        assertFalse(responseDto.isCompleted)
+        assertEquals(testUserId, responseDto.userId)
     }
 
     // --- UPDATE (updateTask) ---

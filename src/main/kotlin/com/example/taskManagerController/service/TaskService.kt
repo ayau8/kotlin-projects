@@ -1,6 +1,8 @@
 package com.example.taskManagerController.service
 
 import com.example.taskManagerController.model.Task
+import com.example.taskManagerController.dto.TaskRequest
+import com.example.taskManagerController.dto.TaskResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.UUID
@@ -14,9 +16,6 @@ class TaskService {
         resetInitialTasks()
     }
 
-    // This method is for testing purposes to ensure a clean state before each test
-    // For a real application with a database, @Transactional test rolls back will be applied
-    // or a tool like Testcontainers to manage the database state
     fun resetInitialTasks() {
         tasks = mutableListOf(
         Task(UUID.fromString("c016e41b-7a32-4d2b-8a8b-1a2b3c4d5e6f"), "Hiking", LocalDate.of(2025, 6, 5), "Okutama", true),
@@ -35,10 +34,29 @@ class TaskService {
         return tasks.firstOrNull { it.id == id }
     }
 
-    fun addTask(task: Task): Task {
-        require(getTaskById(task.id) == null) { "Task with ID ${task.id} already exists." }
-        tasks.add(task)
-        return task
+    fun addTask(request: TaskRequest): TaskResponse {
+        val newTaskId = UUID.randomUUID()
+
+        val newTask = Task(
+            id = newTaskId,
+            title = request.title,
+            date = request.date,
+            description = request.description,
+            isCompleted = request.isCompleted
+        )
+
+        require(getTaskById(newTask.id) == null) { "Generated Task ID ${newTask.id} already exists. Please try again." }
+
+        tasks.add(newTask)
+
+        return TaskResponse(
+            id = newTask.id,
+            title = newTask.title,
+            date = newTask.date,
+            description = newTask.description,
+            isCompleted = newTask.isCompleted,
+            userId = request.userId
+        )
     }
 
     fun updateTask(id: UUID, updatedTask: Task): Task? {

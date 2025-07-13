@@ -37,7 +37,7 @@ class UserControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = ["ADMIN"])
     fun `POST_api_users_with_tasks - should create user with tasks`() {
         val newUser = User(
-            username = "fortesting",
+            username = "forTesting",
             password = "password123",
             roles = "USER",
             tasks = listOf(
@@ -50,8 +50,28 @@ class UserControllerIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(newUserJson))
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.username").value("fortesting"))
+            .andExpect(jsonPath("$.username").value("forTesting"))
             .andExpect(jsonPath("$.tasks.length()").value(1))
             .andExpect(jsonPath("$.tasks[0].title").value("Task"))
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "admin", roles = ["ADMIN"])
+    fun `POST_api_users_with_tasks - should create user without tasks`() {
+        val newUser = User(
+            username = "forTestingNoTasks",
+            password = "password123",
+            roles = "USER",
+            tasks = emptyList()
+        )
+        val newUserJson = objectMapper.writeValueAsString(newUser)
+
+        mockMvc.perform(post("/api/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(newUserJson))
+            .andExpect(status().isCreated)
+            .andExpect(jsonPath("$.username").value("forTestingNoTasks"))
+            .andExpect(jsonPath("$.tasks").isEmpty)
     }
 }
